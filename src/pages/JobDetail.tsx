@@ -7,14 +7,14 @@ import { createApplication } from "../api/applicationApi";
 type JobDetailProps = {
     bookmarks: number[]
     handleBookmark: (id: number) => void;
-    handleApply: (id: number) => void;
+    
 
 };
 
 function JobDetail({
     bookmarks,
     handleBookmark,
-    handleApply
+    
 
 }: JobDetailProps) {
 

@@ -59,52 +59,6 @@ function App() {
     }
   }
 
-  function handleApply(jobId: number) {
-    const isApplied = applications.some((application) => { //some => 조건을 만족하는 요소가 있는지
-      return application.jobId === jobId
-    })
-    if (isApplied) {
-      return;
-    }
-
-    const newApplication: Application = {
-      jobId: jobId,
-      status: "지원완료",
-      appliedAt: new Date().toISOString()
-    }
-
-    setApplications([
-      ...applications,
-      newApplication
-    ])
-  }
-
-  function handleDeleteApplication(jobId: number) {
-    console.log("삭제요청:", jobId);
-    const newApplications = applications.filter((application) => {
-      return application.jobId !== jobId;
-    })
-    setApplications(newApplications);
-  }
-
-
-  function handleStatusChange(
-    jobId: number,
-    newStatus: ApplicationStatus
-  ) {
-    const newApplications = applications.map((application) => {
-      if (jobId === application.jobId) {
-        return {
-          ...application,
-          status: newStatus
-        };
-
-      }
-      return application;
-    })
-    setApplications(newApplications);
-  }
-
   return (
     <div>
       <Header />
@@ -127,7 +81,6 @@ function App() {
             <JobDetail
               bookmarks={bookmarks}
               handleBookmark={handleBookmark}
-              handleApply={handleApply}
             />}
         />
 
@@ -143,11 +96,7 @@ function App() {
         <Route
           path="/applications"
           element={
-            <Applications
-              applications={applications}
-              handleDeleteApplication={handleDeleteApplication}
-              handleStatusChange={handleStatusChange}
-            />
+            <Applications/>
           }
         />
 
@@ -155,7 +104,6 @@ function App() {
           path="/dashboard"
           element={
             <Dashboard
-              applications={applications}
               bookmarks={bookmarks}
             />
           }

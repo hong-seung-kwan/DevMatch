@@ -1,25 +1,16 @@
 import { useState } from "react";
 import ApplicationStatusCard from "../components/ApplicationStatusCard";
-import type { Application, ApplicationStatus } from "../types/application";
+import type { ApplicationStatus } from "../types/application";
 import ApplicationCard from "../components/ApplicationCard";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getJobs } from "../api/jobApi";
 import { deleteApplication, getApplications, updateApplicationStatus } from "../api/applicationApi";
 
-type ApplicationsProps = {
-    applications: Application[]
-    handleDeleteApplication: (id: number) => void;
-    handleStatusChange: (id: number, newStatus: ApplicationStatus) => void;
-}
 
 type StatusFilter = "전체" | ApplicationStatus;
 
 
-function Applications({
-    applications,
-    handleDeleteApplication,
-    handleStatusChange
-}: ApplicationsProps) {
+function Applications() {
 
     const {
         data: jobs = [],

@@ -1,16 +1,16 @@
 import { Link } from "react-router-dom";
 import DashboardStatCard from "../components/DashboardStatCard";
-import type { Application, ApplicationStatus } from "../types/application";
+import type { ApplicationStatus } from "../types/application";
 import { getJobs } from "../api/jobApi";
 import { useQuery } from "@tanstack/react-query";
+import { getApplications } from "../api/applicationApi";
 
 // 어떤 props가 필요한가 생각
 type DashboardProps = {
-    applications: Application[]
     bookmarks: number[]
 }
 
-function Dashboard({ applications, bookmarks }: DashboardProps) {
+function Dashboard({ bookmarks }: DashboardProps) {
     const {
         data: jobs = [],
         isLoading,
@@ -18,6 +18,15 @@ function Dashboard({ applications, bookmarks }: DashboardProps) {
     } = useQuery({
         queryKey: ["jobs"],
         queryFn: getJobs
+    });
+
+    const {
+        data: applications = [],
+        isLoading: isApplicationsLoading,
+        isError: isApplicationsError
+    } = useQuery({
+        queryKey: ["applications"],
+        queryFn: getApplications
     })
     
     const statuses: ApplicationStatus[] = [
@@ -47,10 +56,10 @@ function Dashboard({ applications, bookmarks }: DashboardProps) {
         })
     })
 
-    if (isLoading) {
+    if (isLoading || isApplicationsLoading) {
         return <p>대시보드 데이터를 불러오는 중입니다...</p>
     }
-    if (isError) {
+    if (isError || isApplicationsError) {
         return <p>대시보드 데이터를 불러오지 못했습니다...</p>
     }
     return (
@@ -96,7 +105,7 @@ function Dashboard({ applications, bookmarks }: DashboardProps) {
                         }
                         return (
                             <div
-                                key={application.jobId}
+                                key={application.id}
                                 className="flex justify-between border border-gray-300 rounded-xl p-5">
                                 <div>
                                     <Link
