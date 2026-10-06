@@ -1,0 +1,355 @@
+import type { Job } from "../types/job";
+
+const jobs: Job[] = [
+  {
+    id: 1,
+    company: "DevLab",
+    title: "프론트엔드 개발자",
+    location: "서울",
+    experience: "신입",
+    skills: ["React", "JavaScript", "CSS"],
+    employmentType: "정규직",
+    deadline: "2026-10-15",
+
+    description:
+      "DevLab은 사용자 중심의 웹 서비스를 개발하는 IT 기업입니다. 프론트엔드 개발자는 React를 기반으로 서비스의 사용자 인터페이스를 개발하고, 백엔드 개발자 및 디자이너와 협업하여 더 나은 사용자 경험을 만들어갑니다.",
+
+    responsibilities: [
+      "React 기반 웹 서비스 UI 개발 및 유지보수",
+      "디자이너와 협업하여 반응형 웹 화면 구현",
+      "REST API를 활용한 서버 데이터 연동",
+      "기존 서비스의 사용자 경험 및 성능 개선",
+    ],
+
+    requirements: [
+      "JavaScript의 기본 문법과 동작 원리에 대한 이해",
+      "React를 활용한 프로젝트 경험",
+      "HTML과 CSS를 활용한 웹 UI 구현 능력",
+      "Git을 이용한 기본적인 협업 경험",
+    ],
+
+    preferred: [
+      "TypeScript 사용 경험",
+      "React Router 또는 상태 관리 라이브러리 사용 경험",
+      "REST API 연동 프로젝트 경험",
+      "GitHub에 공개된 개인 프로젝트 또는 포트폴리오 보유",
+    ],
+  },
+
+  {
+    id: 2,
+    company: "NextWave",
+    title: "React 프론트엔드 엔지니어",
+    location: "서울",
+    experience: "1~3년",
+    skills: ["React", "TypeScript", "TanStack Query"],
+    employmentType: "정규직",
+    deadline: "2026-10-20",
+
+    description:
+      "NextWave는 다양한 비즈니스 데이터를 활용한 SaaS 서비스를 개발하고 있습니다. 프론트엔드 엔지니어는 React와 TypeScript를 기반으로 안정적이고 확장 가능한 웹 애플리케이션을 개발합니다.",
+
+    responsibilities: [
+      "React와 TypeScript 기반 SaaS 프론트엔드 개발",
+      "TanStack Query를 활용한 서버 상태 관리",
+      "공통 UI 컴포넌트 설계 및 개발",
+      "웹 서비스 성능 개선 및 코드 리팩터링",
+    ],
+
+    requirements: [
+      "React를 활용한 웹 애플리케이션 개발 경험",
+      "TypeScript에 대한 기본적인 이해",
+      "REST API 기반 데이터 처리 경험",
+      "컴포넌트 기반 UI 설계에 대한 이해",
+    ],
+
+    preferred: [
+      "TanStack Query 사용 경험",
+      "테스트 코드 작성 경험",
+      "디자인 시스템 구축 경험",
+      "프론트엔드 성능 최적화 경험",
+    ],
+  },
+
+  {
+    id: 3,
+    company: "CloudNine",
+    title: "웹 프론트엔드 개발자",
+    location: "경기",
+    experience: "신입",
+    skills: ["React", "TypeScript", "Tailwind CSS"],
+    employmentType: "정규직",
+    deadline: "2026-10-25",
+
+    description:
+      "CloudNine은 클라우드 기반 협업 서비스를 개발하는 스타트업입니다. 사용자가 쉽고 빠르게 서비스를 이용할 수 있도록 직관적인 웹 인터페이스를 함께 만들어갈 프론트엔드 개발자를 찾고 있습니다.",
+
+    responsibilities: [
+      "React 기반 웹 서비스 화면 개발",
+      "Tailwind CSS를 활용한 반응형 UI 구현",
+      "백엔드 API와 프론트엔드 데이터 연동",
+      "서비스 UI 및 사용성 개선",
+    ],
+
+    requirements: [
+      "HTML, CSS, JavaScript에 대한 기본적인 이해",
+      "React 프로젝트 개발 경험",
+      "TypeScript 기초 문법에 대한 이해",
+      "Git을 이용한 소스 코드 관리 경험",
+    ],
+
+    preferred: [
+      "Tailwind CSS 사용 경험",
+      "Vite 기반 프로젝트 경험",
+      "팀 프로젝트 또는 협업 프로젝트 경험",
+      "웹 접근성과 반응형 디자인에 대한 관심",
+    ],
+  },
+
+  {
+    id: 4,
+    company: "CodeFactory",
+    title: "Frontend Engineer",
+    location: "서울",
+    experience: "3~5년",
+    skills: ["React", "Next.js", "TypeScript"],
+    employmentType: "정규직",
+    deadline: "2026-11-01",
+
+    description:
+      "CodeFactory는 다양한 기업을 위한 웹 플랫폼을 개발하고 있습니다. 서비스의 프론트엔드 아키텍처를 개선하고 높은 품질의 사용자 경험을 만들어갈 Frontend Engineer를 모집합니다.",
+
+    responsibilities: [
+      "React 및 Next.js 기반 웹 애플리케이션 개발",
+      "프론트엔드 아키텍처 설계 및 개선",
+      "공통 컴포넌트 및 디자인 시스템 개발",
+      "웹 성능 분석 및 최적화",
+    ],
+
+    requirements: [
+      "3년 이상의 프론트엔드 개발 경험",
+      "React와 TypeScript를 활용한 실무 경험",
+      "Next.js 기반 서비스 개발 경험",
+      "웹 브라우저와 HTTP에 대한 이해",
+    ],
+
+    preferred: [
+      "대규모 웹 서비스 개발 경험",
+      "SSR 및 SEO 최적화 경험",
+      "프론트엔드 테스트 자동화 경험",
+      "CI/CD 환경 구축 또는 사용 경험",
+    ],
+  },
+
+  {
+    id: 5,
+    company: "PixelWorks",
+    title: "UI 프론트엔드 개발자",
+    location: "인천",
+    experience: "신입",
+    skills: ["React", "JavaScript", "HTML", "CSS"],
+    employmentType: "정규직",
+    deadline: "2026-11-05",
+
+    description:
+      "PixelWorks는 사용자 경험과 인터페이스 디자인을 중요하게 생각하는 웹 서비스 기업입니다. 디자이너와 긴밀하게 협업하며 완성도 높은 UI를 구현할 프론트엔드 개발자를 모집합니다.",
+
+    responsibilities: [
+      "React 기반 사용자 인터페이스 개발",
+      "디자인 시안을 기반으로 웹 화면 구현",
+      "반응형 웹 및 모바일 UI 개발",
+      "기존 UI 컴포넌트 유지보수 및 개선",
+    ],
+
+    requirements: [
+      "HTML과 CSS를 활용한 화면 구현 능력",
+      "JavaScript 기본 문법에 대한 이해",
+      "React 기본 개념에 대한 이해",
+      "반응형 웹에 대한 기본적인 이해",
+    ],
+
+    preferred: [
+      "Figma를 활용한 협업 경험",
+      "Tailwind CSS 또는 CSS-in-JS 사용 경험",
+      "UI/UX에 대한 관심",
+      "개인 웹 프로젝트 제작 경험",
+    ],
+  },
+
+  {
+    id: 6,
+    company: "DataFlow",
+    title: "React 웹 개발자",
+    location: "대전",
+    experience: "1~3년",
+    skills: ["React", "Redux Toolkit", "TypeScript"],
+    employmentType: "정규직",
+    deadline: "2026-11-10",
+
+    description:
+      "DataFlow는 데이터를 시각화하고 분석하는 웹 플랫폼을 개발합니다. 복잡한 데이터를 사용자가 쉽게 이해할 수 있는 화면으로 구현할 React 개발자를 찾고 있습니다.",
+
+    responsibilities: [
+      "React 기반 데이터 관리 화면 개발",
+      "Redux Toolkit을 활용한 클라이언트 상태 관리",
+      "REST API 데이터 연동 및 처리",
+      "재사용 가능한 UI 컴포넌트 개발",
+    ],
+
+    requirements: [
+      "React 개발 경험",
+      "JavaScript 또는 TypeScript 개발 경험",
+      "상태 관리에 대한 기본적인 이해",
+      "REST API 연동 경험",
+    ],
+
+    preferred: [
+      "Redux Toolkit 사용 경험",
+      "차트 라이브러리 사용 경험",
+      "대시보드 UI 개발 경험",
+      "데이터 시각화에 대한 관심",
+    ],
+  },
+
+  {
+    id: 7,
+    company: "StartupX",
+    title: "주니어 프론트엔드 개발자",
+    location: "서울",
+    experience: "신입",
+    skills: ["React", "JavaScript", "Git"],
+    employmentType: "계약직",
+    deadline: "2026-11-15",
+
+    description:
+      "StartupX는 빠르게 성장하고 있는 초기 단계 스타트업입니다. 작은 팀에서 제품 개발의 다양한 과정을 경험하며 함께 성장할 주니어 프론트엔드 개발자를 모집합니다.",
+
+    responsibilities: [
+      "React 기반 신규 기능 개발",
+      "기존 웹 서비스 유지보수 및 UI 개선",
+      "백엔드 개발자와 API 연동 작업",
+      "제품 개선을 위한 팀 단위 개발 참여",
+    ],
+
+    requirements: [
+      "JavaScript 기본 문법에 대한 이해",
+      "React를 이용한 프로젝트 경험",
+      "Git과 GitHub의 기본적인 사용 능력",
+      "새로운 기술을 학습하고 적용하려는 태도",
+    ],
+
+    preferred: [
+      "TypeScript 학습 또는 사용 경험",
+      "팀 프로젝트 경험",
+      "스타트업 환경에 대한 관심",
+      "개인 프로젝트를 직접 기획하고 개발한 경험",
+    ],
+  },
+
+  {
+    id: 8,
+    company: "TechBridge",
+    title: "프론트엔드 엔지니어",
+    location: "부산",
+    experience: "1~3년",
+    skills: ["React", "TypeScript", "Next.js"],
+    employmentType: "정규직",
+    deadline: "2026-11-20",
+
+    description:
+      "TechBridge는 기업과 사용자를 연결하는 B2B 플랫폼을 운영합니다. React와 Next.js를 활용하여 빠르고 안정적인 웹 서비스를 함께 개발할 프론트엔드 엔지니어를 찾고 있습니다.",
+
+    responsibilities: [
+      "React 및 Next.js 기반 웹 서비스 개발",
+      "TypeScript 기반 프론트엔드 코드 작성",
+      "백엔드 API 연동 및 데이터 처리",
+      "웹 페이지 성능 및 사용자 경험 개선",
+    ],
+
+    requirements: [
+      "React 기반 웹 개발 경험",
+      "TypeScript 사용 경험",
+      "REST API에 대한 이해",
+      "Git 기반 협업 경험",
+    ],
+
+    preferred: [
+      "Next.js App Router 사용 경험",
+      "SSR 또는 CSR 구조에 대한 이해",
+      "TanStack Query 사용 경험",
+      "웹 서비스 배포 경험",
+    ],
+  },
+
+  {
+    id: 9,
+    company: "AppWorks",
+    title: "웹 서비스 프론트엔드 개발자",
+    location: "경기",
+    experience: "신입",
+    skills: ["React", "Axios", "React Router"],
+    employmentType: "정규직",
+    deadline: "2026-11-25",
+
+    description:
+      "AppWorks는 다양한 생활 편의 웹 서비스를 개발하고 있습니다. React를 기반으로 실제 사용자에게 제공되는 기능을 개발하며 프론트엔드 개발자로 성장할 인재를 모집합니다.",
+
+    responsibilities: [
+      "React 기반 웹 페이지 및 기능 개발",
+      "Axios를 활용한 REST API 연동",
+      "React Router를 활용한 페이지 라우팅 구현",
+      "서비스 오류 수정 및 UI 개선",
+    ],
+
+    requirements: [
+      "HTML, CSS, JavaScript 기본 지식",
+      "React 기본 개념에 대한 이해",
+      "API 통신에 대한 기본적인 이해",
+      "Git을 이용한 프로젝트 관리 경험",
+    ],
+
+    preferred: [
+      "Axios를 활용한 API 연동 경험",
+      "React Router 사용 경험",
+      "배포된 개인 프로젝트 보유",
+      "백엔드 API와 협업한 프로젝트 경험",
+    ],
+  },
+
+  {
+    id: 10,
+    company: "DevSquare",
+    title: "프론트엔드 개발자",
+    location: "서울",
+    experience: "1~3년",
+    skills: ["React", "TypeScript", "Zustand"],
+    employmentType: "정규직",
+    deadline: "2026-11-30",
+
+    description:
+      "DevSquare는 개발팀의 생산성을 높이는 웹 기반 도구를 만들고 있습니다. React와 TypeScript를 기반으로 유지보수하기 좋은 프론트엔드 구조를 함께 고민할 개발자를 모집합니다.",
+
+    responsibilities: [
+      "React 및 TypeScript 기반 웹 애플리케이션 개발",
+      "Zustand를 활용한 클라이언트 상태 관리",
+      "재사용 가능한 컴포넌트 설계 및 구현",
+      "기존 코드 리팩터링 및 품질 개선",
+    ],
+
+    requirements: [
+      "React 개발 경험",
+      "TypeScript 기본 문법에 대한 이해",
+      "컴포넌트 기반 개발 방식에 대한 이해",
+      "REST API 연동 경험",
+    ],
+
+    preferred: [
+      "Zustand 또는 다른 상태 관리 라이브러리 사용 경험",
+      "React Hook Form 사용 경험",
+      "컴포넌트 설계 및 리팩터링 경험",
+      "코드 리뷰를 통한 협업 경험",
+    ],
+  },
+];
+
+export default jobs;
