@@ -1,17 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery} from "@tanstack/react-query";
 import JobCard from "../components/JobCard";
 import { getJobs } from "../api/jobApi";
+import useBookmarks from "../hooks/useBookmarks";
 
-// 필요한거 ? 북마크
-type BookmarksProps = {
-    bookmarks: number[]
-    handleBookmark: (id: number) => void;
-};
-
-function Bookmarks({
-    bookmarks,
-    handleBookmark
-}: BookmarksProps) {
+function Bookmarks() {
 
     const {
         data: jobs = [],
@@ -22,14 +14,29 @@ function Bookmarks({
         queryFn: getJobs
     })
 
-    const bookmarkedJobs = jobs.filter((job) => {
-        return bookmarks.includes(job.id);
+    const {
+        bookmarks: serverBookmarks,
+        isLoading: isBookmarksLoading,
+        isError: isBookmarksError,
+        toggleBookmark
+    } = useBookmarks();
+
+
+    const bookmarkedJobIds = serverBookmarks.map((bookmark) => {
+        return bookmark.jobId;
     })
 
-    if(isLoading){
+    const bookmarkedJobs = jobs.filter((job) => {
+        return serverBookmarks.some((bookmark) => {
+            return bookmark.jobId === job.id
+        });
+    })
+
+
+    if (isLoading || isBookmarksLoading) {
         return <p>북마크 공고를 불러오는 중입니다...</p>
     }
-    if(isError) {
+    if (isError || isBookmarksError) {
         return <p>북마크 공고를 불러오지 못했습니다...</p>
     }
 
@@ -47,8 +54,8 @@ function Bookmarks({
                         <JobCard
                             key={job.id}
                             {...job}
-                            bookmarks={bookmarks}
-                            handleBookmark={handleBookmark}
+                            bookmarks={bookmarkedJobIds}
+                            handleBookmark={toggleBookmark}
                         />
                     )
                 })}

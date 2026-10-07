@@ -1,22 +1,12 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { getJob } from "../api/jobApi";
 import axios from "axios";
-import { createApplication } from "../api/applicationApi";
+import { createApplication, getApplications } from "../api/applicationApi";
+import useBookmarks from "../hooks/useBookmarks";
 
-type JobDetailProps = {
-    bookmarks: number[]
-    handleBookmark: (id: number) => void;
-    
 
-};
-
-function JobDetail({
-    bookmarks,
-    handleBookmark,
-    
-
-}: JobDetailProps) {
+function JobDetail() {
 
     const navigate = useNavigate();
     const { id } = useParams();
@@ -33,16 +23,44 @@ function JobDetail({
         retry: false
     })
 
+    const {
+        bookmarks: serverBookmarks,
+        isLoading: isBookmarksLoading,
+        isError: isBookmarksError,
+        toggleBookmark
+    } = useBookmarks();
+
+    const {
+        data: applications = [],
+        isLoading: isApplicationsLoading,
+        isError: isApplicationsError
+    } = useQuery({
+        queryKey: ["applications"],
+        queryFn: getApplications
+    })
+
+    const isApplied = applications.some((application) => {
+        return application.jobId === jobId;
+    })
+
+    const queryClient = useQueryClient();
+
     const applyMutation = useMutation({
-        mutationFn: createApplication
+        mutationFn: createApplication,
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["applications"]
+            })
+        }
     });
 
 
-    if (isLoading) {
+    if (isLoading || isBookmarksLoading || isApplicationsLoading) {
         return <p>채용공고를 불러오는 중입니다...</p>;
     }
 
-    if (isError) {
+    if (isError || isBookmarksError || isApplicationsError) {
         if (axios.isAxiosError(error) && error.response?.status === 404) {
             return <p>존재하지 않는 공고입니다.</p>
         }
@@ -53,7 +71,7 @@ function JobDetail({
         return <p>존재하지 않는 공고입니다.</p>
     }
 
-    function handleServerApply(id:number) {
+    function handleServerApply(id: number) {
         applyMutation.mutate({
             jobId: id,
             status: "지원완료",
@@ -62,7 +80,9 @@ function JobDetail({
         })
     }
 
-    const isBookmarked = bookmarks.includes(job.id)
+    const isBookmarked = serverBookmarks.some((bookmark) => {
+        return bookmark.jobId === job.id;
+    })
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-10">
@@ -75,7 +95,7 @@ function JobDetail({
             <div className="py-6 space-y-2">
                 <div className="flex gap-2">
                     <p className="text-gray-500">{job.company}</p>
-                    <button onClick={() => handleBookmark(job.id)} className="cursor-pointer">
+                    <button onClick={() => toggleBookmark(job.id)} className="cursor-pointer">
                         {isBookmarked ? "♥" : "♡"}
                     </button>
                 </div>
@@ -155,10 +175,13 @@ function JobDetail({
                 </p>
             </div>
             <div>
+                
                 <button
                     onClick={() => handleServerApply(job.id)}
+                    disabled={isApplied}
+                    className="mt-6 px-6 py-3 bg-black text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
                 >
-                    입사지원하기
+                    {isApplied ? "지원완료" : "입사지원하기"}
                 </button>
             </div>
         </div>

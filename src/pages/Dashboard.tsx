@@ -4,13 +4,11 @@ import type { ApplicationStatus } from "../types/application";
 import { getJobs } from "../api/jobApi";
 import { useQuery } from "@tanstack/react-query";
 import { getApplications } from "../api/applicationApi";
+import useBookmarks from "../hooks/useBookmarks";
 
-// 어떤 props가 필요한가 생각
-type DashboardProps = {
-    bookmarks: number[]
-}
 
-function Dashboard({ bookmarks }: DashboardProps) {
+
+function Dashboard() {
     const {
         data: jobs = [],
         isLoading,
@@ -28,7 +26,13 @@ function Dashboard({ bookmarks }: DashboardProps) {
         queryKey: ["applications"],
         queryFn: getApplications
     })
-    
+
+    const {
+        bookmarks: serverBookmarks,
+        isLoading: isBookmarksLoading,
+        isError: isBookmarksError
+    } = useBookmarks();
+
     const statuses: ApplicationStatus[] = [
         "지원완료",
         "서류합격",
@@ -48,18 +52,18 @@ function Dashboard({ bookmarks }: DashboardProps) {
 
     const recentApplications = sortedApplications.slice(0, 3);
 
-    const recentBookmarkIds = bookmarks.slice(-3).reverse(); //최근 북마크 id찾기
+    const recentBookmarks = serverBookmarks.slice(-3).reverse(); //최근 북마크 id찾기
 
-    const recentBookmarkJobs = recentBookmarkIds.map((id) => {
+    const recentBookmarkJobs = recentBookmarks.map((bookmark) => {
         return jobs.find((job) => {
-            return job.id === id;
+            return job.id === bookmark.jobId;
         })
     })
 
-    if (isLoading || isApplicationsLoading) {
+    if (isLoading || isApplicationsLoading || isBookmarksLoading) {
         return <p>대시보드 데이터를 불러오는 중입니다...</p>
     }
-    if (isError || isApplicationsError) {
+    if (isError || isApplicationsError || isBookmarksError) {
         return <p>대시보드 데이터를 불러오지 못했습니다...</p>
     }
     return (
@@ -74,7 +78,7 @@ function Dashboard({ bookmarks }: DashboardProps) {
                 />
                 <DashboardStatCard
                     label="북마크"
-                    count={bookmarks.length}
+                    count={serverBookmarks.length}
                 />
                 {statuses.map((status) => {
                     return (

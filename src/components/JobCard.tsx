@@ -27,6 +27,7 @@ function JobCard({
                 <div className="flex gap-2">
                     <h2 className="text-sm text-gray-500">{company}</h2>
                     <button
+                        type="button"
                         onClick={(event) => {
                             event.preventDefault(); // Link의 페이지 이동을 막는 용도
                             handleBookmark(id);

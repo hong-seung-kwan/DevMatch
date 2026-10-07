@@ -2,22 +2,14 @@ import { useState } from "react";
 import JobCard from "../components/JobCard";
 import { useQuery } from "@tanstack/react-query";
 import { getJobs } from "../api/jobApi";
+import useBookmarks from "../hooks/useBookmarks";
 
 type ExperienceFilter = "전체" | "신입" | "1~3년" | "3~5년";
-
-type JobsProps = {
-    bookmarks: number[];
-    handleBookmark: (id: number) => void; // 숫자하나 받고 반환값 없는 함수
-    // (받는 값들의 타입) => 반환하는 값의 타입
-
-}
-
 type SortOption = "기본순" | "마감 임박순" | "마감 늦은순";
 
-function Jobs({
-    bookmarks,
-    handleBookmark
-}: JobsProps) {
+function Jobs() {
+
+    console.log("jobs 컴포넌트 실행")
 
     const {
         data: jobs = [],
@@ -26,6 +18,17 @@ function Jobs({
     } = useQuery({
         queryKey: ['jobs'],
         queryFn: getJobs
+    })
+
+    const {
+        bookmarks: serverBookmarks,
+        isLoading: isBookmarkLoading,
+        isError: isBookmarkError,
+        toggleBookmark
+    } = useBookmarks();
+    
+    const bookmarkedJobIds = serverBookmarks.map((bookmark) => {
+        return bookmark.jobId;
     })
 
     const [search, setSearch] = useState("");
@@ -64,10 +67,10 @@ function Jobs({
     }
 
 
-    if (isLoading) {
+    if (isLoading || isBookmarkLoading) {
         return <p>채용공고를 불러오는 중입니다...</p>
     }
-    if (isError) {
+    if (isError || isBookmarkError) {
         return <p>채용공고를 불러오지 못했습니다</p>
     }
     return (
@@ -115,8 +118,8 @@ function Jobs({
                         <JobCard
                             key={job.id}
                             {...job}
-                            bookmarks={bookmarks}
-                            handleBookmark={handleBookmark}
+                            bookmarks={bookmarkedJobIds}
+                            handleBookmark={toggleBookmark}
                         />
                     )
                 })}
