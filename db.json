@@ -330,6 +330,38 @@
         "컴포넌트 설계 및 리팩터링 경험",
         "코드 리뷰를 통한 협업 경험"
       ]
+    },
+    {
+      "company": "DevFlow",
+      "title": "React 프론트엔드 개발자",
+      "location": "서울",
+      "experience": "신입",
+      "skills": [
+        "React",
+        "TypeScript",
+        "Tailwind",
+        "TanStack Query"
+      ],
+      "employmentType": "정규직",
+      "deadline": "2026-11-30",
+      "description": "DevFlow에서 웹 서비스 개발을 함께할 프론트엔드 개발자를 모집합니다.",
+      "responsibilities": [
+        "React 기반 웹 서비스 개발",
+        "REST API 연동",
+        "공통 UI 컴포넌트 개발",
+        "프론트엔드 성능 개선"
+      ],
+      "requirements": [
+        "React 기본 지식을 보유하신 분",
+        "JavaScript 또는 TypeScript 사용이 가능하신 분",
+        "Git을 활용한 협업이 가능하신 분"
+      ],
+      "preferred": [
+        "TypeScript 프로젝트 경험이 있으신 분",
+        "TanStack Query 사용 경험이 있으신 분",
+        "개인 또는 팀 프로젝트 경험이 있으신 분"
+      ],
+      "id": 11
     }
   ],
   "applications": [
@@ -354,12 +386,20 @@
   ],
   "bookmarks": [
     {
-      "jobId": 10,
-      "id": 19
+      "jobId": 1,
+      "id": 1
     },
     {
-      "jobId": 1,
-      "id": 21
+      "jobId": 2,
+      "id": 2
+    },
+    {
+      "jobId": 4,
+      "id": 3
+    },
+    {
+      "jobId": 3,
+      "id": 4
     }
   ]
 }

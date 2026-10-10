@@ -5,7 +5,7 @@ import ApplicationCard from "../components/ApplicationCard";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getJobs } from "../api/jobApi";
 import { deleteApplication, getApplications, updateApplicationStatus } from "../api/applicationApi";
-
+import { APPLICATION_STATUSES } from "../types/application";
 
 type StatusFilter = "전체" | ApplicationStatus;
 
@@ -30,8 +30,6 @@ function Applications() {
         queryFn: getApplications
     });
 
-    console.log("서버 지원내역:", serverApplications)
-
     const queryClient = useQueryClient();
 
     const statusMutation = useMutation({
@@ -39,10 +37,10 @@ function Applications() {
             id,
             status
         }: {
-            id:number;
+            id: number;
             status: ApplicationStatus;
         }) => {
-            return updateApplicationStatus(id,status);
+            return updateApplicationStatus(id, status);
         },
 
         onSuccess: () => {
@@ -51,9 +49,9 @@ function Applications() {
             })
         }
     })
-    
+
     const deleteMutation = useMutation({
-        mutationFn: (id:number) => {
+        mutationFn: (id: number) => {
             return deleteApplication(id);
         },
 
@@ -65,12 +63,12 @@ function Applications() {
     })
 
     function handleServerStatusChange(
-        id:number,
+        id: number,
         newStatus: ApplicationStatus
     ) {
         statusMutation.mutate({
-            id:id,
-            status:newStatus
+            id: id,
+            status: newStatus
         })
     }
 
@@ -89,10 +87,7 @@ function Applications() {
 
     const statuses: StatusFilter[] = [
         "전체",
-        "지원완료",
-        "서류합격",
-        "면접",
-        "최종합격"
+        ...APPLICATION_STATUSES
     ]
 
     const [statusFilter, setStatusFilter] = useState<StatusFilter>("전체");
@@ -130,74 +125,77 @@ function Applications() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-10">
-            <div className="mb-8">
-                <h1 className="text-2xl font-bold">
-                    지원 관리
-                </h1>
+        <div className="min-h-screen bg-gray-50">
+            <div className="max-w-5xl mx-auto px-4 py-10">
+                <div className="mb-8">
+                    <h1 className="text-2xl font-bold">
+                        지원 관리
+                    </h1>
 
-                <p className="text-gray-500 mt-1">
-                    총 {serverApplications.length}개의 지원 내역이 있습니다.
-                </p>
-            </div>
-            <div className="grid grid-cols-5 gap-4">
-
-                {statuses.map((status) => {
-                    return (
-                        <ApplicationStatusCard
-                            key={status}
-                            label={status}
-                            count={getStatusCount(status)}
-                            isActive={statusFilter === status}
-                            onClick={() => {
-                                setStatusFilter(status)
-                            }}
-                        />
-                    )
-                })}
-            </div>
-            <input
-                type="text"
-                value={search}
-                onChange={(event) => {
-                    setSearch(event.target.value);
-                }}
-                placeholder="회사명 또는 공고명 검색"
-                className="border rounded-lg px-4 py-2 w-full mt-6"
-            />
-            {serverApplications.length === 0 && (
-                <div>
-                    <p>아직 지원한 공고가 없습니다.</p>
-                    <p>관심 있는 채용공고에 지원해보세요.</p>
+                    <p className="text-gray-500 mt-1">
+                        총 {serverApplications.length}개의 지원 내역이 있습니다.
+                    </p>
                 </div>
-            )}
-            {serverApplications.length > 0 && filteredApplications.length === 0 && (
-                <div>
-                    <p>검색조건에 맞는 지원 내역이 없습니다.</p>
+                <div className="grid grid-cols-5 gap-4">
+
+                    {statuses.map((status) => {
+                        return (
+                            <ApplicationStatusCard
+                                key={status}
+                                label={status}
+                                count={getStatusCount(status)}
+                                isActive={statusFilter === status}
+                                onClick={() => {
+                                    setStatusFilter(status)
+                                }}
+                            />
+                        )
+                    })}
                 </div>
-            )}
-            <div className="space-y-4 mt-8">
+                <input
+                    type="text"
+                    value={search}
+                    onChange={(event) => {
+                        setSearch(event.target.value);
+                    }}
+                    placeholder="회사명 또는 공고명 검색"
+                    className="border border-gray-200 bg-white text-sm rounded-xl px-4 py-2 w-full mt-6 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                />
+                {serverApplications.length === 0 && (
 
-                {sortedApplications.map((application) => {
-                    const job = jobs.find((job) => {
-                        return job.id === application.jobId;
-                    })
+                    <div className="rounded-xl bg-white py-16 text-center">
+                        <p className="font-medium text-gray-700">아직 지원한 공고가 없습니다.</p>
+                        <p className="font-medium text-gray-700">관심 있는 채용공고에 지원해보세요.</p>
+                    </div>
+                )}
+                {serverApplications.length > 0 && filteredApplications.length === 0 && (
+                    <div className="rounded-xl bg-white py-16 text-center">
+                        <p className="font-medium text-gray-700">검색조건에 맞는 지원 내역이 없습니다.</p>
+                    </div>
+                )}
+                <div className="space-y-4 mt-8">
 
-                    if (!job) {
-                        return null;
-                    }
+                    {sortedApplications.map((application) => {
+                        const job = jobs.find((job) => {
+                            return job.id === application.jobId;
+                        })
 
-                    return (
-                        <ApplicationCard
-                            key={application.id}
-                            job={job}
-                            application={application}
-                            handleDeleteApplication={handleServerDelete}
-                            handleStatusChange={handleServerStatusChange}
-                        />
-                    )
-                })}
+                        if (!job) {
+                            return null;
+                        }
 
+                        return (
+                            <ApplicationCard
+                                key={application.id}
+                                job={job}
+                                application={application}
+                                handleDeleteApplication={handleServerDelete}
+                                handleStatusChange={handleServerStatusChange}
+                            />
+                        )
+                    })}
+
+                </div>
             </div>
         </div>
     )

@@ -16,3 +16,9 @@ export type CreateApplication = { // 서버에 보낼 데이터에 id없음
     status: ApplicationStatus;
     appliedAt: string;
 }
+export const APPLICATION_STATUSES: ApplicationStatus[] = [
+    "지원완료",
+    "서류합격",
+    "면접",
+    "최종합격"
+];

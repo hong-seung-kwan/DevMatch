@@ -1,4 +1,4 @@
-import { useQuery} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import JobCard from "../components/JobCard";
 import { getJobs } from "../api/jobApi";
 import useBookmarks from "../hooks/useBookmarks";
@@ -45,7 +45,9 @@ function Bookmarks() {
             <h1 className="text-2xl font-bold mb-6">북마크</h1>
             {bookmarkedJobs.length === 0 && (
 
-                <p>북마크한 공고가 없습니다.</p>
+                <div className="rounded-xl bg-white py-16 text-center">
+                    <p className="font-medium text-gray-700">북마크한 공고가 없습니다.</p>
+                </div>
 
             )}
             <div className="space-y-4">

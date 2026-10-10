@@ -53,6 +53,17 @@ function Header() {
                     >
                         대시보드
                     </NavLink>
+
+                    <NavLink
+                        to="/jobs/new"
+                        className={({ isActive }) =>
+                            isActive
+                                ? "font-bold"
+                                : "text-gray-500"
+                        }
+                    >
+                        공고등록
+                    </NavLink>
                 </nav>
             </div>
         </header>

@@ -14,3 +14,6 @@ export type Job = {
     requirements: string[];
     preferred: string[];
 }
+
+// Omit : 기존 타입에서 특정 속성 빼고 새로운 타입만들기
+export type CreateJob = Omit<Job, "id">;

@@ -5,6 +5,7 @@ import Bookmarks from "./pages/Bookmarks";
 import Header from "./components/Header";
 import Applications from "./pages/Applications";
 import Dashboard from "./pages/Dashboard";
+import JobCreate from "./pages/JobCreate";
 
 
 
@@ -40,6 +41,11 @@ function App() {
         <Route
           path="/dashboard"
           element={<Dashboard/>}
+        />
+
+        <Route
+          path="/jobs/new"
+          element={<JobCreate/>}
         />
 
       </Routes>
