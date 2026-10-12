@@ -1,4 +1,3 @@
-import { useState } from "react";
 import ApplicationStatusCard from "../components/ApplicationStatusCard";
 import type { ApplicationStatus } from "../types/application";
 import ApplicationCard from "../components/ApplicationCard";
@@ -6,8 +5,15 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getJobs } from "../api/jobApi";
 import { deleteApplication, getApplications, updateApplicationStatus } from "../api/applicationApi";
 import { APPLICATION_STATUSES } from "../types/application";
+import { useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 type StatusFilter = "전체" | ApplicationStatus;
+
+const STATUS_FILTERS: StatusFilter[] = [
+    "전체",
+    ...APPLICATION_STATUSES
+];
 
 
 function Applications() {
@@ -39,40 +45,36 @@ function Applications() {
         }: {
             id: number;
             status: ApplicationStatus;
-        }) => {
-            return updateApplicationStatus(id, status);
-        },
+        }) => updateApplicationStatus(id, status),
 
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ["applications"]
-            })
+            });
         }
-    })
+    });
 
     const deleteMutation = useMutation({
-        mutationFn: (id: number) => {
-            return deleteApplication(id);
-        },
+        mutationFn: deleteApplication,
 
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ["applications"]
-            })
+            });
         }
-    })
+    });
 
-    function handleServerStatusChange(
+    function handleStatusChange(
         id: number,
         newStatus: ApplicationStatus
     ) {
         statusMutation.mutate({
-            id: id,
+            id,
             status: newStatus
         })
     }
 
-    function handleServerDelete(id: number) {
+    function handleDelete(id: number) {
         deleteMutation.mutate(id);
     }
 
@@ -80,18 +82,30 @@ function Applications() {
         if (status === "전체") {
             return serverApplications.length
         }
-        return serverApplications.filter((application) => {
-            return application.status === status;
-        }).length;
+        return serverApplications.filter(
+            (application) => application.status === status
+        ).length;
     }
 
-    const statuses: StatusFilter[] = [
-        "전체",
-        ...APPLICATION_STATUSES
-    ]
+    const [searchParams, setSearchParams] = useSearchParams();
+    const search = searchParams.get("search") ?? "";
+    const statusFilter = (searchParams.get("status") as StatusFilter) ?? "전체";
+    const [searchInput, setSearchInput] = useState(search);
 
-    const [statusFilter, setStatusFilter] = useState<StatusFilter>("전체");
-    const [search, setSearch] = useState("");
+    useEffect(() => {
+        const handlePopState = () => {
+            const params = new URLSearchParams(window.location.search);
+            const urlSearch = params.get("search") ?? "";
+
+            setSearchInput(urlSearch);
+        };
+
+        window.addEventListener("popstate", handlePopState);
+
+        return () => {
+            window.removeEventListener("popstate", handlePopState);
+        };
+    }, []);
 
     const filteredApplications = serverApplications.filter((application) => {
 
@@ -138,7 +152,7 @@ function Applications() {
                 </div>
                 <div className="grid grid-cols-5 gap-4">
 
-                    {statuses.map((status) => {
+                    {STATUS_FILTERS.map((status) => {
                         return (
                             <ApplicationStatusCard
                                 key={status}
@@ -146,21 +160,48 @@ function Applications() {
                                 count={getStatusCount(status)}
                                 isActive={statusFilter === status}
                                 onClick={() => {
-                                    setStatusFilter(status)
+                                    setSearchParams((prev) => {
+                                        const next = new URLSearchParams(prev)
+                                        if (status === "전체") {
+                                            next.delete("status")
+
+                                        } else {
+                                            next.set("status", status);
+                                        }
+
+                                        return next
+                                    })
                                 }}
                             />
                         )
                     })}
                 </div>
-                <input
-                    type="text"
-                    value={search}
-                    onChange={(event) => {
-                        setSearch(event.target.value);
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+
+                        setSearchParams((prev) => {
+                            const next = new URLSearchParams(prev)
+                            if (searchInput) {
+                                next.set("search", searchInput);
+                            } else {
+                                next.delete("search")
+                            }
+
+                            return next
+                        })
                     }}
-                    placeholder="회사명 또는 공고명 검색"
-                    className="border border-gray-200 bg-white text-sm rounded-xl px-4 py-2 w-full mt-6 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                />
+                >
+                    <input
+                        type="text"
+                        value={searchInput}
+                        onChange={(e) => {
+                            setSearchInput(e.target.value);
+                        }}
+                        placeholder="회사명 또는 공고명 검색"
+                        className="border border-gray-200 bg-white text-sm rounded-xl px-4 py-2 w-full mt-6 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    />
+                </form>
                 {serverApplications.length === 0 && (
 
                     <div className="rounded-xl bg-white py-16 text-center">
@@ -189,14 +230,15 @@ function Applications() {
                                 key={application.id}
                                 job={job}
                                 application={application}
-                                handleDeleteApplication={handleServerDelete}
-                                handleStatusChange={handleServerStatusChange}
+                                onDelete={handleDelete}
+                                onStatusChange={handleStatusChange}
                             />
                         )
                     })}
 
                 </div>
             </div>
+
         </div>
     )
 }

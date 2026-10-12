@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes } from "react-router-dom"
 import Jobs from "./pages/Jobs"
 import JobDetail from "./pages/JobDetail"
 import Bookmarks from "./pages/Bookmarks";
@@ -17,35 +17,38 @@ function App() {
       <Routes>
 
         <Route
+          path="/"
+          element={<Navigate to="/jobs" replace />}
+        />
+
+        <Route
           path="/jobs"
-          element={<Jobs/>}
+          element={<Jobs />}
         />
 
         <Route
           path="/jobs/:id"
-          element={<JobDetail/>}
+          element={<JobDetail />}
         />
 
         <Route
           path="/bookmarks"
-          element={<Bookmarks/>}
+          element={<Bookmarks />}
         />
 
         <Route
           path="/applications"
-          element={
-            <Applications/>
-          }
+          element={<Applications />}
         />
 
         <Route
           path="/dashboard"
-          element={<Dashboard/>}
+          element={<Dashboard />}
         />
 
         <Route
           path="/jobs/new"
-          element={<JobCreate/>}
+          element={<JobCreate />}
         />
 
       </Routes>

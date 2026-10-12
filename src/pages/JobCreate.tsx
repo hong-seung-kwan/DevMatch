@@ -33,6 +33,15 @@ function JobCreate() {
             navigate("/jobs");
         }
     })
+    function handleChange(
+        field: keyof CreateJob,
+        value: string
+    ) {
+        setForm({
+            ...form,
+            [field]: value
+        })
+    }
 
     const handleSubmit: SubmitEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
@@ -41,8 +50,8 @@ function JobCreate() {
     };
 
     return (
-        <div className="min-h-screnn bg-gray-50">
-            <div className="mx-auto max-w-4xl px-4 py-10">
+        <div className="min-h-screen bg-gray-50">
+            <div className="mx-auto max-w-5xl px-4 py-10">
                 <div className="mb-8">
 
                     <h1 className="text-2xl font-bold">
@@ -74,10 +83,7 @@ function JobCreate() {
                             value={form.company}
                             placeholder="회사명을 입력하세요"
                             onChange={(e) => {
-                                setForm({
-                                    ...form,
-                                    company: e.target.value
-                                })
+                                handleChange("company", e.target.value);
                             }}
                             className="w-full rounded-lg border px-4 py-3 outline-none focus:ring-2"
                         />
@@ -91,10 +97,7 @@ function JobCreate() {
                             value={form.title}
                             placeholder="공고 제목을 입력하세요"
                             onChange={(e) => {
-                                setForm({
-                                    ...form,
-                                    title: e.target.value
-                                })
+                                handleChange("title", e.target.value);
                             }}
                             className="w-full rounded-lg border px-4 py-3 outline-none focus:ring-2"
                         />
@@ -109,10 +112,7 @@ function JobCreate() {
                                 value={form.location}
                                 placeholder="근무지역을 입력하세요"
                                 onChange={(e) => {
-                                    setForm({
-                                        ...form,
-                                        location: e.target.value
-                                    })
+                                    handleChange("location", e.target.value);
                                 }}
                                 className="w-full rounded-lg border px-4 py-3 outline-none focus:ring-2"
                             />
@@ -124,10 +124,7 @@ function JobCreate() {
                             <select
                                 value={form.experience}
                                 onChange={(e) => {
-                                    setForm({
-                                        ...form,
-                                        experience: e.target.value
-                                    })
+                                    handleChange("experience", e.target.value);
                                 }}
                                 className="w-full rounded-lg border px-4 py-3 outline-none focus:ring-2"
                             >
@@ -163,10 +160,7 @@ function JobCreate() {
                             <select
                                 value={form.employmentType}
                                 onChange={(e) => {
-                                    setForm({
-                                        ...form,
-                                        employmentType: e.target.value
-                                    })
+                                    handleChange("employmentType", e.target.value);
                                 }}
                                 className="w-full rounded-lg border px-4 py-3 outline-none focus:ring-2"
                             >
@@ -184,10 +178,7 @@ function JobCreate() {
                                 type="date"
                                 value={form.deadline}
                                 onChange={(e) => {
-                                    setForm({
-                                        ...form,
-                                        deadline: e.target.value
-                                    })
+                                    handleChange("deadline", e.target.value);
                                 }}
                                 className="w-full rounded-lg border px-4 py-3 outline-none focus:ring-2"
                             />
@@ -210,10 +201,7 @@ function JobCreate() {
                             value={form.description}
                             placeholder="포지션 소개를 입력하세요"
                             onChange={(e) => {
-                                setForm({
-                                    ...form,
-                                    description: e.target.value
-                                })
+                                handleChange("description", e.target.value);
                             }}
                             className="min-h-28 w-full resize-y rounded-lg border px-4 py-3 outline-none focus:ring-2"
                         />

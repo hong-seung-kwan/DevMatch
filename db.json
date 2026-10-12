@@ -379,27 +379,25 @@
     },
     {
       "jobId": 8,
-      "status": "지원완료",
+      "status": "최종합격",
       "appliedAt": "2026-10-07T08:16:43.921Z",
       "id": 3
+    },
+    {
+      "jobId": 11,
+      "status": "지원완료",
+      "appliedAt": "2026-10-12T09:02:53.623Z",
+      "id": 4
     }
   ],
   "bookmarks": [
     {
-      "jobId": 1,
-      "id": 1
-    },
-    {
-      "jobId": 2,
+      "jobId": 3,
       "id": 2
     },
     {
-      "jobId": 4,
+      "jobId": 6,
       "id": 3
-    },
-    {
-      "jobId": 3,
-      "id": 4
     }
   ]
 }

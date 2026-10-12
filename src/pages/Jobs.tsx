@@ -3,11 +3,30 @@ import { useQuery } from "@tanstack/react-query";
 import { getJobs } from "../api/jobApi";
 import useBookmarks from "../hooks/useBookmarks";
 import { useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import FilterButtons from "../components/FilterButtons";
 
 type ExperienceFilter = "전체" | "신입" | "1~3년" | "3~5년";
 type SortOption = "기본순" | "마감 임박순" | "마감 늦은순";
 type EmploymentFilter = "전체" | "정규직" | "계약직" | "인턴";
 
+const EXPERIENCE_OPTIONS: ExperienceFilter[] = [
+    "전체",
+    "신입",
+    "1~3년",
+    "3~5년"
+]
+const EMPLOYMENT_TYPE_OPTIONS: EmploymentFilter[] = [
+    "전체",
+    "정규직",
+    "계약직",
+    "인턴"
+]
+const SORT_OPTIONS: SortOption[] = [
+    "기본순",
+    "마감 임박순",
+    "마감 늦은순"
+];
 function Jobs() {
 
     const {
@@ -33,15 +52,52 @@ function Jobs() {
 
     const [searchParams, setSearchParams] = useSearchParams();
     const search = searchParams.get("search") ?? "";
+    const [searchInput, setSearchInput] = useState(search);
+    useEffect(() => {
+        const handlePopState = () => {
+            const params = new URLSearchParams(window.location.search);
+            const urlSearch = params.get("search") ?? "";
+
+            setSearchInput(urlSearch);
+        };
+
+        window.addEventListener("popstate", handlePopState);
+
+        return () => {
+            window.removeEventListener("popstate", handlePopState);
+        };
+    }, []);
     const experience = (searchParams.get("experience") as ExperienceFilter) ?? "전체";
     const employmentType = (searchParams.get("employmentType") as EmploymentFilter) ?? "전체";
     const sort = (searchParams.get("sort") as SortOption) ?? "기본순";
     const keyword = search.toLowerCase()
+
     const hasActiveFilters =
         search !== "" ||
         experience !== "전체" ||
         employmentType !== "전체" ||
         sort !== "기본순";
+
+    function updateSearchParams(
+        key: string,
+        value: string,
+        defaultValue: string
+    ) {
+        setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+
+            if (value === defaultValue) {
+                next.delete(key)
+            } else {
+                next.set(key, value)
+            }
+            return next;
+        })
+    }
+    function resetFilters() {
+        setSearchParams("");
+        setSearchInput("");
+    }
 
     const filteredJobs = jobs.filter((job) => {
         const matchesSearch =
@@ -56,31 +112,25 @@ function Jobs() {
         return matchesSearch && matchesExperience && matchesEmploymentType;
 
     })
-    const experienceOptions: ExperienceFilter[] = [
-        "전체",
-        "신입",
-        "1~3년",
-        "3~5년"
-    ]
-    const employmentTypeOptions: EmploymentFilter[] = [
-        "전체",
-        "정규직",
-        "계약직",
-        "인턴"
-    ]
 
 
     const sortedJobs = [...filteredJobs];
 
-    if (sort === "마감 임박순") {
-        sortedJobs.sort((a, b) => {
-            return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
-        })
-    }
-    if (sort === "마감 늦은순") {
-        sortedJobs.sort((a, b) => {
-            return new Date(b.deadline).getTime() - new Date(a.deadline).getTime();
-        })
+    switch (sort) {
+        case "마감 임박순":
+            sortedJobs.sort((a, b) => {
+                return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+            })
+            break;
+
+        case "마감 늦은순":
+            sortedJobs.sort((a, b) => {
+                return new Date(b.deadline).getTime() - new Date(a.deadline).getTime();
+            })
+            break;
+
+        default:
+            break;
     }
 
 
@@ -99,24 +149,23 @@ function Jobs() {
                 </div>
 
                 <div className="space-y-4 mb-6">
-                    <input
-                        type="text"
-                        value={search}
-                        placeholder="회사명 또는 공고명을 검색하세요"
-                        onChange={(e) => {
-                            setSearchParams((prev) => {
-                                const next = new URLSearchParams(prev)
-                                if (e.target.value) {
-                                    next.set("search", e.target.value);
-                                } else {
-                                    next.delete("search")
-                                }
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
 
-                                return next
-                            })
+                            updateSearchParams("search", searchInput, "");
                         }}
-                        className="w-full border border-gray rounded-lg px-4 py-3 focus:outline-none focus:ring-1 focus:ring-gray-400"
-                    />
+                    >
+                        <input
+                            type="text"
+                            value={searchInput}
+                            placeholder="회사명 또는 공고명을 검색하세요"
+                            onChange={(e) => {
+                                setSearchInput(e.target.value);
+                            }}
+                            className="w-full border border-gray rounded-lg px-4 py-3 focus:outline-none focus:ring-1 focus:ring-gray-400"
+                        />
+                    </form>
                 </div>
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-[220px_1fr]">
                     <aside className="h-fit rounded-xl border border-gray-200 bg-white p-5">
@@ -129,80 +178,30 @@ function Jobs() {
                                 type="button"
                                 disabled={!hasActiveFilters}
                                 className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-600 transition enabled:hover:text-gray-900 enabled:hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40"
-                                onClick={() => {
-                                    setSearchParams("");
-                                }}
+                                onClick={resetFilters}
                             >
                                 ↻ 초기화
                             </button>
                         </div>
                         <div className="mt-6">
-                            <p className="mb-3 text-sm font-medium text-gray-700">
-                                경력
-                            </p>
-
-                            <div className="flex flex-wrap gap-2 lg:flex-col">
-                                {experienceOptions.map((option) => {
-                                    return (
-                                        <button
-                                            key={option}
-                                            onClick={() => {
-                                                setSearchParams((prev) => {
-                                                    const next = new URLSearchParams(prev);
-
-                                                    if (option === "전체") {
-                                                        next.delete("experience");
-                                                    } else {
-                                                        next.set("experience", option);
-                                                    }
-
-                                                    return next;
-                                                });
-                                            }}
-                                            className={`rounded-lg px-3 py-2 text-left transition lg:w-full ${experience === option
-                                                ? "bg-black text-white"
-                                                : "text-gray-700 hover:bg-gray-100"
-                                                }`}
-                                        >
-                                            {option}
-                                        </button>
-                                    );
-                                })}
-
-                            </div>
+                            <FilterButtons
+                                title="경력"
+                                options={EXPERIENCE_OPTIONS}
+                                selectedValue={experience}
+                                onChange={(value) => {
+                                    updateSearchParams("experience", value, "전체")
+                                }}
+                            />
                         </div>
                         <div className="mt-6 border-t border-gray-200 pt-6">
-                            <p className="mb-3 text-sm font-medium text-gray-700">
-                                고용형태
-                            </p>
-                            <div className="flex flex-wrap gap-2 lg:flex-col">
-                                {employmentTypeOptions.map((option) => {
-                                    return (
-                                        <button
-                                            key={option}
-                                            onClick={() => {
-                                                setSearchParams((prev) => {
-                                                    const next = new URLSearchParams(prev);
-
-                                                    if (option === "전체") {
-                                                        next.delete("employmentType")
-                                                    } else {
-                                                        next.set("employmentType", option)
-                                                    }
-
-                                                    return next;
-                                                })
-                                            }}
-                                            className={`rounded-lg px-3 py-2 text-left transition lg:w-full ${employmentType === option
-                                                ? "bg-black text-white"
-                                                : "text-gray-700 hover:bg-gray-100"
-                                                }`}
-                                        >
-                                            {option}
-                                        </button>
-                                    )
-                                })}
-                            </div>
+                            <FilterButtons
+                                title="고용형태"
+                                options={EMPLOYMENT_TYPE_OPTIONS}
+                                selectedValue={employmentType}
+                                onChange={(value) => {
+                                    updateSearchParams("employmentType", value, "전체")
+                                }}
+                            />
                         </div>
                     </aside>
 
@@ -217,23 +216,15 @@ function Jobs() {
                                 onChange={(e) => {
                                     const value = e.target.value as SortOption;
 
-                                    setSearchParams((prev) => {
-                                        const next = new URLSearchParams(prev);
-
-                                        if (value === "기본순") {
-                                            next.delete("sort");
-                                        } else {
-                                            next.set("sort", value);
-                                        }
-
-                                        return next;
-                                    });
+                                    updateSearchParams("sort", value, "기본순");
                                 }}
                                 className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
                             >
-                                <option value="기본순">기본순</option>
-                                <option value="마감 임박순">마감 임박순</option>
-                                <option value="마감 늦은순">마감 늦은순</option>
+                                {SORT_OPTIONS.map((option) => (
+                                    <option key={option} value={option}>
+                                        {option}
+                                    </option>
+                                ))}
                             </select>
                         </div>
 
@@ -243,7 +234,7 @@ function Jobs() {
                                     <JobCard
                                         key={job.id}
                                         {...job}
-                                        bookmarks={bookmarkedJobIds}
+                                        isBookmarked={bookmarkedJobIds.includes(job.id)}
                                         handleBookmark={toggleBookmark}
                                     />
                                 );

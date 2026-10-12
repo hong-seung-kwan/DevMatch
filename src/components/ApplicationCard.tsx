@@ -7,28 +7,28 @@ import { APPLICATION_STATUSES } from "../types/application";
 type ApplicationCardProps = {
     job: Job;
     application: Application;
-    handleDeleteApplication: (id: number) => void
-    handleStatusChange: (id: number, newStatus: ApplicationStatus) => void
+    onDelete: (id: number) => void
+    onStatusChange: (id: number, newStatus: ApplicationStatus) => void
 }
+
+const STATUS_CLASSES: Record<ApplicationStatus, string> = {
+    지원완료: "bg-gray-100 text-gray-700",
+    서류합격: "bg-blue-50 text-blue-700",
+    면접: "bg-orange-50 text-orange-700",
+    최종합격: "bg-green-50 text-green-700"
+};
 
 function ApplicationCard({
     job,
     application,
-    handleDeleteApplication,
-    handleStatusChange
+    onDelete,
+    onStatusChange
 }: ApplicationCardProps) {
 
     const appliedDate = new Date(application.appliedAt)
         .toLocaleDateString("ko-KR");
 
-    const statusClasses: Record<ApplicationStatus, string> = {
-        지원완료: "bg-gray-100 text-gray-700",
-        서류합격: "bg-blue-50 text-blue-700",
-        면접: "bg-orange-50 text-orange-700",
-        최종합격: "bg-green-50 text-green-700"
-    };
-
-    const statusClass = statusClasses[application.status];
+    const statusClass = STATUS_CLASSES[application.status];
     return (
 
         <div className="border border-gray-200 bg-white rounded-xl p-5 transition hover:shadow-sm">
@@ -39,34 +39,33 @@ function ApplicationCard({
                         className="text-sm font-medium text-gray-500 hover:text-gray-900 hover:underline cursor-pointer"
                     >
                         {job.company}
-                    </Link>
 
-                    <h2 className="text-lg font-bold text-gray-900">
-                        {job.title}
-                    </h2>
+
+                        <h2 className="text-lg font-bold text-gray-900">
+                            {job.title}
+                        </h2>
+                    </Link>
                 </div>
 
                 <select
                     value={application.status}
                     onChange={(event) => {
-                        handleStatusChange(
+                        onStatusChange(
                             application.id,
                             event.target.value as ApplicationStatus
                         )
                     }}
                     className={`rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium outline-none ${statusClass}`}
                 >
-                    {APPLICATION_STATUSES.map((status) => {
-                        return (
-                            <option
-                                key={status}
-                                value={status}
-                                className="text-gray-900 bg-white"
-                            >
-                                {status}
-                            </option>
-                        );
-                    })}
+                    {APPLICATION_STATUSES.map((status) => (
+                        <option
+                            key={status}
+                            value={status}
+                            className="text-gray-900 bg-white"
+                        >
+                            {status}
+                        </option>
+                    ))}
                 </select>
             </div>
 
@@ -77,7 +76,7 @@ function ApplicationCard({
             <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
                 <p className="text-sm text-gray-500">지원일: {appliedDate}</p>
                 <button
-                    onClick={() => handleDeleteApplication(application.id)}
+                    onClick={() => onDelete(application.id)}
                     className="cursor-pointer text-sm font-medium text-red-500 transition hover:text-red-700"
                 >
                     지원 취소

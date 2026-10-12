@@ -4,6 +4,7 @@ import { getJob } from "../api/jobApi";
 import axios from "axios";
 import { createApplication, getApplications } from "../api/applicationApi";
 import useBookmarks from "../hooks/useBookmarks";
+import JobDetailSection from "../components/JobDetailSection";
 
 
 function JobDetail() {
@@ -14,9 +15,9 @@ function JobDetail() {
 
     const {
         data: job,
-        isLoading,
-        isError,
-        error
+        isLoading: isJobLoading,
+        isError: isJobError,
+        error: jobError
     } = useQuery({
         queryKey: ["jobs", jobId],
         queryFn: () => getJob(jobId),
@@ -38,10 +39,13 @@ function JobDetail() {
         queryKey: ["applications"],
         queryFn: getApplications
     })
+    const isApplied = applications.some(
+        (application) => application.jobId === jobId
+    );
 
-    const isApplied = applications.some((application) => {
-        return application.jobId === jobId;
-    })
+    const isBookmarked = serverBookmarks.some(
+        (bookmark) => bookmark.jobId === jobId
+    );
 
     const queryClient = useQueryClient();
 
@@ -56,33 +60,31 @@ function JobDetail() {
     });
 
 
-    if (isLoading || isBookmarksLoading || isApplicationsLoading) {
+    if (isJobLoading || isBookmarksLoading || isApplicationsLoading) {
         return <p>채용공고를 불러오는 중입니다...</p>;
     }
 
-    if (isError || isBookmarksError || isApplicationsError) {
-        if (axios.isAxiosError(error) && error.response?.status === 404) {
-            return <p>존재하지 않는 공고입니다.</p>
+    if (isJobError) {
+        if (axios.isAxiosError(jobError) && jobError.response?.status === 404) {
+            return <p>존재하지 않는 공고입니다.</p>;
         }
         return <p>채용공고를 불러오지 못했습니다.</p>;
     }
-
+    if (isBookmarksError || isApplicationsError) {
+        return <p>사용자 정보를 불러오지 못했습니다.</p>;
+    }
     if (!job) {
         return <p>존재하지 않는 공고입니다.</p>
     }
 
-    function handleServerApply(id: number) {
+    function handleApply() {
         applyMutation.mutate({
-            jobId: id,
+            jobId,
             status: "지원완료",
             appliedAt: new Date().toISOString()
 
         })
     }
-
-    const isBookmarked = serverBookmarks.some((bookmark) => {
-        return bookmark.jobId === job.id;
-    })
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -113,57 +115,37 @@ function JobDetail() {
                         </div>
                     </div>
                     <div className="mb-5 flex flex-wrap gap-2">
-                        {job.skills.map((skill) => {
-                            return (
-                                <span
-                                    key={skill}
-                                    className="rounded-lg bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-600"
-                                >
-                                    {skill}
-                                </span>
-                            );
-                        })}
+                        {job.skills.map((skill) => (
+                            <span
+                                key={skill}
+                                className="rounded-lg bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-600"
+                            >
+                                {skill}
+                            </span>
+                        ))}
                     </div>
-
-
                     <section className="py-8 border-t border-gray-200">
-                        <h2 className="text-xl font-bold mb-4">포지션 소개</h2>
-                        <p className="text-gray-700 leading-7">{job.description}</p>
+                        <h2 className="text-xl font-bold mb-4">
+                            포지션 소개
+                        </h2>
+                        <p className="text-gray-700 leading-7">
+                            {job.description}
+                        </p>
                     </section>
-                    <section className="py-8 border-t border-gray-200">
-                        <h2 className="text-xl font-bold mb-4">주요 업무</h2>
+                    <JobDetailSection
+                        title="주요 업무"
+                        items={job.responsibilities}
+                    />
 
-                        <ul className="list-disc pl-5 space-y-2 text-gray-700">
-                            {job.responsibilities.map((responsibility) => {
-                                return (
-                                    <li key={responsibility}>{responsibility}</li>
-                                )
-                            })}
-                        </ul>
-                    </section>
-                    <section className="py-8 border-t border-gray-200">
-                        <h2 className="text-xl font-bold mb-4">자격 요건</h2>
+                    <JobDetailSection
+                        title="자격 요건"
+                        items={job.requirements}
+                    />
 
-                        <ul className="list-disc pl-5 space-y-2 text-gray-700">
-                            {job.requirements.map((req) => {
-                                return (
-                                    <li key={req}>{req}</li>
-                                )
-                            })}
-                        </ul>
-                    </section>
-                    <section className="py-8 border-t border-gray-200">
-                        <h2 className="text-xl font-bold mb-4">우대 사항</h2>
-
-                        <ul className="list-disc pl-5 space-y-2 text-gray-700">
-                            {job.preferred.map((pre) => {
-                                return (
-                                    <li key={pre}>{pre}</li>
-                                )
-                            })}
-                        </ul>
-                    </section>
-
+                    <JobDetailSection
+                        title="우대 사항"
+                        items={job.preferred}
+                    />
                     <div className="mt-8 flex items-center justify-between rounded-xl bg-gray-50 p-5 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                             <p className="text-sm text-gray-500">
@@ -174,13 +156,24 @@ function JobDetail() {
                             </p>
                         </div>
 
-                        <button
-                            onClick={() => handleServerApply(job.id)}
-                            disabled={isApplied}
-                            className="cursor-pointer rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
-                        >
-                            {isApplied ? "지원완료" : "입사지원하기"}
-                        </button>
+                        <div>
+                            <button
+                                onClick={handleApply}
+                                disabled={isApplied || applyMutation.isPending}
+                                className="cursor-pointer rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
+                            >
+                                {isApplied ? "지원완료"
+                                    : applyMutation.isPending
+                                        ? "지원 중.. "
+                                        : "입사지원하기"}
+                            </button>
+
+                            {applyMutation.isError && (
+                                <p className="mt-2 text-sm text-red-500">
+                                    지원 처리 중 오류가 발생했습니다. 다시 시도해주세요.
+                                </p>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

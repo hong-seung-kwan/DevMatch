@@ -2,24 +2,10 @@ import { Link } from "react-router-dom";
 import type { Job } from "../types/job";
 
 type JobCardProps = Job & {
-    bookmarks: number[]
+    isBookmarked: boolean;
     handleBookmark: (id: number) => void;
 }
-
-function JobCard({
-    id,
-    company,
-    title,
-    location,
-    experience,
-    skills,
-    employmentType,
-    deadline,
-    bookmarks,
-    handleBookmark
-}: JobCardProps) {
-    const isBookmarked = bookmarks.includes(id);
-
+function getDeadlineText(deadline: string) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -41,6 +27,22 @@ function JobCard({
     } else {
         deadlineText = `D-${daysLeft}`;
     }
+
+    return deadlineText;
+}
+function JobCard({
+    id,
+    company,
+    title,
+    location,
+    experience,
+    skills,
+    employmentType,
+    deadline,
+    isBookmarked,
+    handleBookmark
+}: JobCardProps) {
+    const deadlineText = getDeadlineText(deadline);
 
     return (
 
@@ -71,15 +73,14 @@ function JobCard({
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                    {skills.map((skill) => {
-                        return (
-                            <span
-                                key={skill}
-                                className="rounded-md text-sm bg-gray-100 px-2.5 py-1 text-gray-600"
-                            >{skill}</span>
-
-                        )
-                    })}
+                    {skills.map((skill) => (
+                        <span
+                            key={skill}
+                            className="rounded-md text-sm bg-gray-100 px-2.5 py-1 text-gray-600"
+                        >
+                            {skill}
+                        </span>
+                    ))}
                 </div>
 
 

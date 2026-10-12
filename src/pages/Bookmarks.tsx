@@ -22,15 +22,13 @@ function Bookmarks() {
     } = useBookmarks();
 
 
-    const bookmarkedJobIds = serverBookmarks.map((bookmark) => {
-        return bookmark.jobId;
-    })
+    const bookmarkedJobIds = serverBookmarks.map(
+        (bookmark) => bookmark.jobId
+    );
 
-    const bookmarkedJobs = jobs.filter((job) => {
-        return serverBookmarks.some((bookmark) => {
-            return bookmark.jobId === job.id
-        });
-    })
+    const bookmarkedJobs = jobs.filter(
+        (job) => bookmarkedJobIds.includes(job.id)
+    );
 
 
     if (isLoading || isBookmarksLoading) {
@@ -41,26 +39,34 @@ function Bookmarks() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-10">
-            <h1 className="text-2xl font-bold mb-6">북마크</h1>
-            {bookmarkedJobs.length === 0 && (
-
-                <div className="rounded-xl bg-white py-16 text-center">
-                    <p className="font-medium text-gray-700">북마크한 공고가 없습니다.</p>
+        <div className="min-h-screen bg-gray-50">
+            <div className="max-w-5xl mx-auto px-4 py-10">
+                <div className="mb-6 flex items-end justify-between">
+                    <div>
+                        <h1 className="text-2xl font-bold mb-6">북마크</h1>
+                        <p className="mt-2 text-sm text-gray-500">관심 있는 채용공고를 모아볼 수 있습니다.</p>
+                    </div>
+                    <p className="text-sm text-gray-500">총 {bookmarkedJobs.length}개</p>
                 </div>
+                {bookmarkedJobs.length === 0 && (
 
-            )}
-            <div className="space-y-4">
-                {bookmarkedJobs.map((job) => {
-                    return (
-                        <JobCard
-                            key={job.id}
-                            {...job}
-                            bookmarks={bookmarkedJobIds}
-                            handleBookmark={toggleBookmark}
-                        />
-                    )
-                })}
+                    <div className="rounded-xl bg-white py-16 text-center">
+                        <p className="font-medium text-gray-700">북마크한 공고가 없습니다.</p>
+                    </div>
+
+                )}
+                <div className="space-y-4">
+                    {bookmarkedJobs.map((job) => {
+                        return (
+                            <JobCard
+                                key={job.id}
+                                {...job}
+                                isBookmarked={bookmarkedJobIds.includes(job.id)}
+                                handleBookmark={toggleBookmark}
+                            />
+                        )
+                    })}
+                </div>
             </div>
         </div>
     )

@@ -12,9 +12,9 @@ function ApplicationStatusCard({
     isActive
 }: ApplicationStatusCardProps) {
     return (
-        <div
+        <button
             className={`border rounded-xl p-5 cursor-pointer hover:bg-gray-50 transition ${isActive
-                    ? "border-none bg-blue-100 text-blue-600"
+                    ? "border-transparent bg-blue-100 text-blue-600"
                     : "border-gray-200 text-gray-500"
                 }`}
             onClick={onClick}>
@@ -25,7 +25,7 @@ function ApplicationStatusCard({
             <p className="text-2xl font-bold mt-2">
                 {count}
             </p>
-        </div>
+        </button>
     )
 }
 export default ApplicationStatusCard
