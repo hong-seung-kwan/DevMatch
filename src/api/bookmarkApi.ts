@@ -19,7 +19,7 @@ export async function createBookmark(
 }
 
 export async function deleteBookmark(
-    id:number
+    id: number
 ): Promise<void> {
     await api.delete(`/bookmarks/${id}`)
 }

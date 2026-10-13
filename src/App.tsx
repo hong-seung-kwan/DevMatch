@@ -17,6 +17,11 @@ function App() {
       <Routes>
 
         <Route
+          path="*"
+          element={<Navigate to="/jobs" replace />}
+        />
+
+        <Route
           path="/"
           element={<Navigate to="/jobs" replace />}
         />
@@ -24,6 +29,11 @@ function App() {
         <Route
           path="/jobs"
           element={<Jobs />}
+        />
+
+        <Route
+          path="/jobs/new"
+          element={<JobCreate />}
         />
 
         <Route
@@ -44,11 +54,6 @@ function App() {
         <Route
           path="/dashboard"
           element={<Dashboard />}
-        />
-
-        <Route
-          path="/jobs/new"
-          element={<JobCreate />}
         />
 
       </Routes>

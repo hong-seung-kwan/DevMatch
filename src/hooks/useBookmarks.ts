@@ -49,9 +49,9 @@ function useBookmarks() {
 
     function removeBookmark(jobId: number) {
         
-        const bookmark = bookmarks.find((bookmark) => {
-            return bookmark.jobId === jobId;
-        })
+        const bookmark = bookmarks.find(
+            (bookmark) => bookmark.jobId === jobId
+        )
 
         if (!bookmark) return;
 
@@ -59,9 +59,9 @@ function useBookmarks() {
     }
 
     function toggleBookmark(jobId: number) {
-        const isBookmarked = bookmarks.some((bookmark) => {
-            return bookmark.jobId === jobId;
-        })
+        const isBookmarked = bookmarks.some(
+            (bookmark) => bookmark.jobId === jobId
+        )
         if (isBookmarked) {
             removeBookmark(jobId)
         } else {

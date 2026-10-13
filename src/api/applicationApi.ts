@@ -21,12 +21,12 @@ export async function createApplication(
 }
 
 export async function updateApplicationStatus(
-    id:number,
+    id: number,
     status: ApplicationStatus
 ): Promise<Application> {
     const response = await api.patch<Application>(
         `/applications/${id}`,
-        {status}
+        { status }
     );
 
     return response.data;
@@ -34,6 +34,6 @@ export async function updateApplicationStatus(
 
 export async function deleteApplication(
     id: number
-) : Promise<void> { // <void> 함수가 완료되기는 하는데 사용할 반환값은 없음..
+): Promise<void> { // <void> 함수가 완료되기는 하는데 사용할 반환값은 없음..
     await api.delete(`/applications/${id}`);
 }

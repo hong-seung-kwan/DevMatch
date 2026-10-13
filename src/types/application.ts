@@ -11,11 +11,8 @@ export type Application = { // 서버에서 받을 때 id 있음
     appliedAt: string;
 }
 
-export type CreateApplication = { // 서버에 보낼 데이터에 id없음
-    jobId: number;
-    status: ApplicationStatus;
-    appliedAt: string;
-}
+export type CreateApplication = Omit<Application, "id">;
+
 export const APPLICATION_STATUSES: ApplicationStatus[] = [
     "지원완료",
     "서류합격",
